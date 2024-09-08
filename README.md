@@ -43,3 +43,5 @@ Then You can see `codeblocks-20.03mingw-setup.exe` text. Now Just click on `Foss
  Hurray! You can see pop up a terminal and see the output `Hello Fortarn`.
  
  Your codeblocks ide now setup for fortran.
+
+ ## Setup Codeblocks for Fortran [Linux]
