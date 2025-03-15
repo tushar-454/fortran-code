@@ -1,0 +1,18 @@
+COMPLEX CX1,CX2
+READ*, A,B,C
+D=B**2.0-4.0*A*C
+P=-B/(2.0*A)
+Q=SQRT(ABS(D))/(2.0*A)
+IF(D.GE.0.0) THEN
+    X1=P+Q
+    X2=P-Q
+    PRINT*, "ROOT 1=",X1
+    PRINT*, "ROOT 2=",X2
+ELSE
+    CX1=CMPLX(P,Q)
+    CX2=CMPLX(P,-Q)
+    PRINT*, "ROOT 1=",CX1
+    PRINT*, "ROOT 2=",CX2
+END IF
+STOP
+END
