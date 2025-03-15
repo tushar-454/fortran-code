@@ -1,0 +1,13 @@
+READ*, X
+SUM=1.0
+K=-1
+A=1.2
+DO 7 N = 2, 30, 2
+SUM = SUM + (REAL(K)* REAL((X**N))/ A)
+K=-K
+A=A+2.2
+7 CONTINUE
+WRITE(6,10) SUM
+10 FORMAT(2X, "SUM is=", F8.2)
+STOP
+END
