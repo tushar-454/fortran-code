@@ -11,6 +11,7 @@ fi
 echo "Select a .f90 file:"
 select file in "${files[@]}"; do
     if [[ -n "$file" ]]; then
+        clear
         exe=$(mktemp)
         gfortran "$file" -o "$exe" && echo "Running $file..." && "$exe"
         rm -f "$exe"
