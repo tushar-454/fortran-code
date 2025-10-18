@@ -7,6 +7,11 @@
       A(1,1) = 2.0;  A(1,2) = 4.0;  A(1,3) = 6.0
       A(2,1) = 3.0;  A(2,2) = 8.0;  A(2,3) = 5.0
       A(3,1) = -1.0; A(3,2) = 1.0;  A(3,3) = 2.0
+!     USING RESHAPE
+      ! A = RESHAPE( (/ 2.0, 3.0, -1.0, &
+      !                4.0, 8.0, 1.0, &
+      !               6.0, 5.0, 2.0 /), &
+      !               SHAPE(A) )
       
 !     RIGHT-HAND SIDE
       B(1) = 22.0
@@ -50,14 +55,14 @@
 !     OUTPUT L MATRIX
       PRINT*, 'L MATRIX:'
       DO I = 1, 3
-         PRINT '(3F10.5)', L(I,1), L(I,2), L(I,3)
+         PRINT '(3F10.5)', L(I,:)
       END DO
       PRINT*
 
 !     OUTPUT U MATRIX
       PRINT*, 'U MATRIX:'
       DO I = 1, 3
-         PRINT '(3F10.5)', U(I,1), U(I,2), U(I,3)
+         PRINT '(3F10.5)', U(I,:)
       END DO
       PRINT*
 
