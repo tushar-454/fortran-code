@@ -1,100 +1,48 @@
-PROGRAM SIMPSONS_INTEGRATION
-      IMPLICIT NONE
-      DOUBLE PRECISION :: A = 0.0D0, B = 6.0D0, EXACT, SIMP13, SIMP38
-      INTEGER :: N
-      
-      ! Display problem information
-      WRITE(*,'(A)') 'Simpson''s Rule Integration: ∫₀⁶ 1/(1+x²) dx'
-      WRITE(*,'(A)') '=============================================='
-      
-      ! Calculate exact value: ∫ 1/(1+x²) dx = arctan(x)
-      EXACT = ATAN(B) - ATAN(A)
-      WRITE(*,'(A,F10.6)') 'Exact value = arctan(6) = ', EXACT
-      
-      ! Get number of intervals (make even for Simpson's 1/3)
-      WRITE(*,'(A)',ADVANCE='NO') 'Enter number of intervals: '
-      read(*,*) N
-      IF (MOD(N, 2) .NE. 0) N = N + 1
-      
-      ! Calculate using both methods
-      CALL SIMPSON_13(A, B, N, SIMP13)
-      CALL SIMPSON_38(A, B, N, SIMP38)
-      
-      ! Display results
-      WRITE(*,'(/A)') 'Results:'
-      WRITE(*,'(A,F10.6)') 'Exact value:      ', EXACT
-      WRITE(*,'(A,F10.6,A,E10.3)') 'Simpson 1/3:      ', SIMP13, '  Error: ', ABS(EXACT-SIMP13)
-      WRITE(*,'(A,F10.6,A,E10.3)') 'Simpson 3/8:      ', SIMP38, '  Error: ', ABS(EXACT-SIMP38)
-      
-      IF (ABS(EXACT-SIMP13) .LT. ABS(EXACT-SIMP38)) THEN
-          WRITE(*,'(/A)') 'Simpson 1/3 rule is more accurate.'
-      ELSE
-          WRITE(*,'(/A)') 'Simpson 3/8 rule is more accurate.'
-      ENDIF
-      
+PROGRAM SIMPSONS
+    INTEGER :: INTERVALS, K
+    REAL :: LOWER_LIMIT, UPPER_LIMIT, X1, F1, SUM_ONE_THIRD, SUM_THREE_EIGHTH
+    REAL :: S13, S38, EXACT, ERR13, ERR38, STEP
+
+    F(X)=1.0/(1.0+X**2)
+    LOWER_LIMIT=0.0
+    UPPER_LIMIT=6.0
+    INTERVALS=24
+    STEP=(UPPER_LIMIT-LOWER_LIMIT)/FLOAT(INTERVALS)
+    S13=(F(LOWER_LIMIT)+F(UPPER_LIMIT))
+    S38=(F(LOWER_LIMIT)+F(UPPER_LIMIT))
+
+    DO K=1,INTERVALS-1
+        X1=LOWER_LIMIT+FLOAT(K)*STEP
+        F1=F(X1)
+        IF(MOD(K,2).EQ.0)THEN
+            S13=S13+2.0*F1
+        ELSE
+            S13=S13+4.0*F1
+        ENDIF
+            IF(MOD(K,3).EQ.0)THEN
+            S38=S38+2.0*F1
+        ELSE
+            S38=S38+3.0*F1
+        ENDIF
+    ENDDO
+
+    SUM_ONE_THIRD=S13*(STEP/3.0)
+    SUM_THREE_EIGHTH=S38*(3.0*STEP/8.0)
+    EXACT=ATAN(UPPER_LIMIT)-ATAN(LOWER_LIMIT)
+    ERR13=ABS(EXACT-SUM_ONE_THIRD)
+    ERR38=ABS(EXACT-SUM_THREE_EIGHTH)
+
+    PRINT*,"SIMPSON'S RULE INTEGRATION: 1/(1+X^2) FROM 0 TO 6"
+    PRINT*,"=================================================="
+    PRINT*,"EXACT VALUE      = ",EXACT
+    PRINT*,"SIMPSON'S 1/3    = ",SUM_ONE_THIRD
+    PRINT*,"ERROR IN 1/3     = ",ERR13
+    PRINT*,"SIMPSON'S 3/8    = ",SUM_THREE_EIGHTH
+    PRINT*,"ERROR IN 3/8     = ",ERR38
+    PRINT*,""
+    IF(ERR13.LT.ERR38)THEN
+    PRINT*,"SIMPSON'S 1/3 rule is more accurate"
+    ELSE
+    PRINT*,"SIMPSON'S 3/8 rule is more accurate"
+    ENDIF
 END PROGRAM
-
-SUBROUTINE SIMPSON_13(A, B, N, RESULT)      
-      DOUBLE PRECISION :: A, B, RESULT, H, X, INTEGRAL
-      INTEGER :: N, I
-      
-      INTERFACE
-          FUNCTION F(X) RESULT(Y)
-              DOUBLE PRECISION :: X, Y
-          END FUNCTION F
-      END INTERFACE
-      
-      H = (B - A) / N
-      INTEGRAL = 0.0D0
-      
-      ! Add first and last points
-      INTEGRAL = INTEGRAL + F(A)
-      INTEGRAL = INTEGRAL + F(B)
-      
-      ! Add interior points with appropriate weights
-      DO I = 1, N-1
-          X = A + I * H
-          IF (MOD(I, 2) .EQ. 1) THEN
-              INTEGRAL = INTEGRAL + 4.0D0 * F(X)
-          ELSE
-              INTEGRAL = INTEGRAL + 2.0D0 * F(X)
-          ENDIF
-      ENDDO
-      
-      RESULT = INTEGRAL * (H / 3.0D0)
-END SUBROUTINE
-
-SUBROUTINE SIMPSON_38(A, B, N, RESULT)      
-      DOUBLE PRECISION :: A, B, RESULT, H, X, INTEGRAL
-      INTEGER :: N, I
-      
-      INTERFACE
-          FUNCTION F(X) RESULT(Y)
-              DOUBLE PRECISION :: X, Y
-          END FUNCTION F
-      END INTERFACE
-      
-      H = (B - A) / N
-      INTEGRAL = 0.0D0
-      
-      ! Add first and last points
-      INTEGRAL = INTEGRAL + F(A)
-      INTEGRAL = INTEGRAL + F(B)
-      
-      ! Add interior points with appropriate weights
-      DO I = 1, N-1
-          X = A + I * H
-          IF (MOD(I, 3) .EQ. 0) THEN
-              INTEGRAL = INTEGRAL + 2.0D0 * F(X)
-          ELSE
-              INTEGRAL = INTEGRAL + 3.0D0 * F(X)
-          ENDIF
-      ENDDO
-      
-      RESULT = INTEGRAL * (3.0D0 * H / 8.0D0)
-END SUBROUTINE
-
-FUNCTION F(X) RESULT(Y)
-      DOUBLE PRECISION :: X, Y
-      Y = 1.0D0 / (1.0D0 + X*X)
-END FUNCTION
