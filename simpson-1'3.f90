@@ -1,0 +1,41 @@
+PROGRAM SIMPSON_ONE_THIRD
+    IMPLICIT NONE
+
+    INTEGER :: INTERVAL, K
+    REAL :: LOWER_LIMIT, UPPER_LIMIT, X, FX, STEP
+    REAL :: SUM, RESULT, EXACT, ERROR
+
+    REAL :: F
+
+    F(X) = SQRT(1.0 - X**2)
+
+    LOWER_LIMIT = 0.0
+    UPPER_LIMIT = 1.0
+    INTERVAL = 24   ! must be even
+
+    STEP = (UPPER_LIMIT - LOWER_LIMIT) / REAL(INTERVAL)
+
+    SUM = F(LOWER_LIMIT) + F(UPPER_LIMIT)
+
+    DO K = 1, INTERVAL - 1
+        X = LOWER_LIMIT + REAL(K) * STEP
+        FX = F(X)
+
+        IF (MOD(K,2) .EQ. 0) THEN
+            SUM = SUM + 2.0 * FX
+        ELSE
+            SUM = SUM + 4.0 * FX
+        END IF
+    END DO
+
+    RESULT = SUM * (STEP / 3.0)
+
+    EXACT = ASIN(UPPER_LIMIT) - ASIN(LOWER_LIMIT)
+    ERROR = ABS(EXACT - RESULT)
+
+    PRINT*, "SIMPSON 1/3 RULE"
+    PRINT*, "RESULT =", RESULT
+    PRINT*, "EXACT  =", EXACT
+    PRINT*, "ERROR  =", ERROR
+
+END PROGRAM SIMPSON_ONE_THIRD
